@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/sDaman830/phile-storage/internal/content"
+	"github.com/sDaman830/Verity/internal/content"
 )
 
 // chdirTemp points the relative "data/" root at a throwaway directory.

@@ -8,11 +8,11 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/sDaman830/phile-storage/internal/config"
-	"github.com/sDaman830/phile-storage/internal/content"
-	"github.com/sDaman830/phile-storage/internal/p2p"
-	"github.com/sDaman830/phile-storage/internal/storage"
 	"github.com/ipfs/go-cid"
+	"github.com/sDaman830/Verity/internal/config"
+	"github.com/sDaman830/Verity/internal/content"
+	"github.com/sDaman830/Verity/internal/p2p"
+	"github.com/sDaman830/Verity/internal/storage"
 )
 
 // providerLimit caps how many DHT providers we try before giving up.
@@ -93,9 +93,12 @@ func (s *Server) UploadFileHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ctx := r.Context()
+	// Best-effort. The block is already durably on disk, announce() below
+	// retries the advertisement in the background, and startup re-announces
+	// every block anyway — so a node whose DHT routing table is still empty
+	// (or that is offline entirely) must not reject an otherwise-valid write.
 	if err := s.metadataStore.AddHolder(ctx, c, s.peerAddress); err != nil {
-		http.Error(w, "failed to index file", http.StatusInternalServerError)
-		return
+		slog.Warn("index holder", "cid", c.String(), "err", err, "peer", s.peerUUID)
 	}
 	if err := s.metadataStore.SetName(ctx, header.Filename, c); err != nil {
 		http.Error(w, "failed to register name", http.StatusInternalServerError)

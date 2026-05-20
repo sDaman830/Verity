@@ -32,7 +32,7 @@ const (
 // Load reads configuration from the environment, falling back to defaults.
 func Load() Config {
 	return Config{
-		UseEtcdRedis:  envBool("PHILE_USE_ETCD_REDIS", false),
+		UseEtcdRedis:  envBool("VERITY_USE_ETCD_REDIS", false),
 		EtcdEndpoints: splitCSV(env("ETCD_ENDPOINTS", defaultEtcd)),
 		RedisAddr:     env("REDIS_ADDR", defaultRedisAddr),
 		BasePort:      envInt("BASE_PORT", defaultBasePort),

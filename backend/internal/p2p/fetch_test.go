@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/sDaman830/phile-storage/internal/content"
+	"github.com/sDaman830/Verity/internal/content"
 )
 
 func chdirTemp(t *testing.T) {

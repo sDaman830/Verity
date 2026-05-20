@@ -10,8 +10,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/sDaman830/phile-storage/internal/content"
 	"github.com/ipfs/go-cid"
+	"github.com/sDaman830/Verity/internal/content"
 )
 
 // resolveTarget turns a request into the CID to serve. A request may name the

@@ -8,16 +8,16 @@ import (
 	"log/slog"
 	"strings"
 
-	"github.com/sDaman830/phile-storage/internal/content"
 	"github.com/ipfs/go-cid"
 	"github.com/libp2p/go-libp2p/core/network"
 	"github.com/libp2p/go-libp2p/core/peer"
 	"github.com/libp2p/go-libp2p/core/protocol"
+	"github.com/sDaman830/Verity/internal/content"
 )
 
 // fetchProtocol is the wire protocol for requesting a block by CID:
 // the client writes "<cid>\n", the server streams the raw block back.
-const fetchProtocol protocol.ID = "/phile/fetch/1.0.0"
+const fetchProtocol protocol.ID = "/verity/fetch/1.0.0"
 
 func (n *Node) registerFetchHandler(provide BlockProvider) {
 	n.host.SetStreamHandler(fetchProtocol, func(s network.Stream) {

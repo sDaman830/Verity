@@ -9,12 +9,12 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/sDaman830/phile-storage/internal/api"
-	"github.com/sDaman830/phile-storage/internal/config"
-	"github.com/sDaman830/phile-storage/internal/content"
-	"github.com/sDaman830/phile-storage/internal/etcd"
-	"github.com/sDaman830/phile-storage/internal/p2p"
-	"github.com/sDaman830/phile-storage/internal/storage"
+	"github.com/sDaman830/Verity/internal/api"
+	"github.com/sDaman830/Verity/internal/config"
+	"github.com/sDaman830/Verity/internal/content"
+	"github.com/sDaman830/Verity/internal/etcd"
+	"github.com/sDaman830/Verity/internal/p2p"
+	"github.com/sDaman830/Verity/internal/storage"
 )
 
 // backend bundles the shared services a peer needs. In decentralized mode the
@@ -116,7 +116,7 @@ func main() {
 		b.registry = etcd.NewPeerRegistry(client, 10)
 		b.metadata = storage.NewMetadataStore(cfg.RedisAddr)
 	}
-	slog.Info("starting phile-storage", "mode", mode(cfg), "peers", *numPeers)
+	slog.Info("starting verity", "mode", mode(cfg), "peers", *numPeers)
 
 	for i := 0; i < *numPeers; i++ {
 		go startPeer(ctx, b, i)

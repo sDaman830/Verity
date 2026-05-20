@@ -1,5 +1,5 @@
 # Variables
-BINARY_NAME = phile-storage
+BINARY_NAME = verity
 DOCKER_COMPOSE_FILE = docker-compose.yml
 PEER_COUNT ?= 1
 

@@ -1,4 +1,4 @@
-module github.com/sDaman830/phile-storage
+module github.com/sDaman830/Verity
 
 go 1.25.7
 

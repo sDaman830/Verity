@@ -11,7 +11,7 @@ import (
 )
 
 // mdnsServiceTag scopes local discovery to this application.
-const mdnsServiceTag = "phile-storage"
+const mdnsServiceTag = "verity"
 
 // mdnsNotifee dials any peer found on the local network so the DHT has someone
 // to talk to without a public bootstrap list — ideal for the localhost demo.
