@@ -1,8 +1,8 @@
-# 🗂️ Phile Storage
+# Verity
 
 A peer-to-peer, **content-addressed** file sharing system built with Go and React. Files are addressed by the hash of their bytes (a CID), fetched over **libp2p**, and verified on arrival — so a peer can never hand you tampered data. Runs with **zero external infrastructure** by default.
 
-![Phile Storage dashboard](assets/page.png)
+![Verity dashboard](assets/page.png)
 
 ---
 
@@ -10,7 +10,7 @@ A peer-to-peer, **content-addressed** file sharing system built with Go and Reac
 
 - **Content addressing (CIDs).** A file's address is the fingerprint of its bytes (CIDv1, SHA-256). Identical files dedupe automatically, content is immutable, and any peer can verify it received the right bytes.
 - **Trustless retrieval.** Every cross-peer fetch re-hashes the bytes against the requested CID and rejects a mismatch — corrupted or swapped content is never served.
-- **libp2p networking.** Each node has a cryptographic **PeerID** (keypair-derived identity, persisted across restarts), discovers others via **mDNS**, and routes content through a **Kademlia DHT** (`Provide` / `FindProviders` by CID) over a custom `/phile/fetch/1.0.0` stream protocol.
+- **libp2p networking.** Each node has a cryptographic **PeerID** (keypair-derived identity, persisted across restarts), discovers others via **mDNS**, and routes content through a **Kademlia DHT** (`Provide` / `FindProviders` by CID) over a custom `/verity/fetch/1.0.0` stream protocol.
 
 ---
 
@@ -20,8 +20,8 @@ The web3 stack (libp2p) is always on. The **centralized index** (etcd + Redis) i
 
 | Mode | When | Peer discovery | Content index | Infra needed |
 |------|------|----------------|---------------|--------------|
-| **Decentralized** *(default)* | `PHILE_USE_ETCD_REDIS` unset | libp2p mDNS + DHT | DHT (by CID) + node-local name map | **None** |
-| **Centralized** | `PHILE_USE_ETCD_REDIS=true` | etcd registry | Redis (global file map + name→CID) | Docker (etcd + Redis) |
+| **Decentralized** *(default)* | `VERITY_USE_ETCD_REDIS` unset | libp2p mDNS + DHT | DHT (by CID) + node-local name map | **None** |
+| **Centralized** | `VERITY_USE_ETCD_REDIS=true` | etcd registry | Redis (global file map + name→CID) | Docker (etcd + Redis) |
 
 In decentralized mode the global File Map is a **local view** (each node only knows the names of files it uploaded); content still moves freely by CID across the network. Centralized mode keeps a shared, global file index.
 
@@ -46,7 +46,7 @@ Delete a peer's `data/peer-<port>/` directory (or run `rm -rf data`) to reset it
 ```bash
 cd backend
 make build
-./bin/phile-storage -peers=3        # 3 peers: HTTP 5001-5003, libp2p 6001-6003
+./bin/verity -peers=3        # 3 peers: HTTP 5001-5003, libp2p 6001-6003
 
 cd ../frontend
 npm install
@@ -58,7 +58,7 @@ npm run dev
 ```bash
 cd backend
 make start-docker                   # etcd + Redis containers
-PHILE_USE_ETCD_REDIS=true ./bin/phile-storage -peers=3
+VERITY_USE_ETCD_REDIS=true ./bin/verity -peers=3
 ```
 
 Open the dashboard at **http://localhost:5173**. Upload a file, watch its CID appear, then download it from another peer and see it propagate.
@@ -69,7 +69,7 @@ All optional, with sane defaults:
 
 | Env var | Default | Purpose |
 |---------|---------|---------|
-| `PHILE_USE_ETCD_REDIS` | `false` | Enable the centralized etcd+Redis backend |
+| `VERITY_USE_ETCD_REDIS` | `false` | Enable the centralized etcd+Redis backend |
 | `ETCD_ENDPOINTS` | `localhost:2379` | etcd endpoints (centralized mode) |
 | `REDIS_ADDR` | `localhost:6379` | Redis address (centralized mode) |
 | `BASE_PORT` | `5001` | First peer's HTTP port |

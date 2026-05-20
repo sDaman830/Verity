@@ -1,29 +1,40 @@
-bin/
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+backend/bin/
 
-# Peer runtime state (blocks, identity keys, name index)
-data/
+# Test binary, built with `go test -c`
+*.test
 
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+# Code coverage profiles and other test artifacts
+*.out
+coverage.*
+*.coverprofile
+profile.cov
 
-node_modules
-dist
-dist-ssr
-*.local
+# Go workspace file
+go.work
+go.work.sum
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+# Per-peer runtime state: content blocks, libp2p identity keys, name index.
+# identity.key is a private key — never commit it.
+backend/data/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
+# env file
+.env
+
+# Editor / OS
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+*.swp
+.idea/
+.vscode/
+
+# Claude Code local config
+.claude/
