@@ -23,6 +23,14 @@ export async function getAllPeers() {
   return await res.json() // { uuid: ip:port, ... }
 }
 
+// Read one peer's file map: filename -> { cid, holders }. In decentralized
+// mode this is that node's local view, not a global index.
+export async function getFiles(peerAddress) {
+  const res = await fetch(`http://${peerAddress}/files`)
+  if (!res.ok) throw new Error(await res.text())
+  return await res.json()
+}
+
 // Resolve a filename on one peer to its CID and current holders.
 export async function discoverFile(filename, peerAddress) {
   const res = await fetch(`http://${peerAddress}/discover?filename=${encodeURIComponent(filename)}`)

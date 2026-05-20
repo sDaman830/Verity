@@ -1,61 +1,47 @@
-import { useEffect, useState } from 'react'
-import { getAllPeers, getP2PInfo } from '../api'
+import { useNetwork } from '../network-context'
 
 export default function PeerList() {
-  const [peers, setPeers] = useState({})
-  const [identities, setIdentities] = useState({}) // addr -> peerID
+  const { peers, status } = useNetwork()
 
-  useEffect(() => {
-    async function fetchPeers() {
-      try {
-        const data = await getAllPeers()
-        setPeers(data)
+  if (status === 'loading') {
+    return (
+      <div className="flex flex-col gap-2">
+        <div className="skeleton" />
+        <div className="skeleton" />
+        <div className="skeleton" />
+      </div>
+    )
+  }
 
-        const ids = {}
-        await Promise.all(
-          Object.values(data).map(async (addr) => {
-            try {
-              const info = await getP2PInfo(addr)
-              if (info.enabled) ids[addr] = info.peerID
-            } catch {
-              // Peer may not have libp2p enabled; skip.
-            }
-          })
-        )
-        setIdentities(ids)
-      } catch {
-        setPeers({})
-        setIdentities({})
-      }
-    }
-    fetchPeers()
-    const interval = setInterval(fetchPeers, 5000)
-    return () => clearInterval(interval)
-  }, [])
-
-  const entries = Object.entries(peers)
+  if (peers.length === 0) {
+    return (
+      <div className="empty">
+        <span>No peers registered.</span>
+        <span className="label">Start a node: ./bin/verity -peers=3</span>
+      </div>
+    )
+  }
 
   return (
-    <>
-      <p className="text-soft text-sm">Live nodes and their libp2p identities.</p>
-
-      {entries.length === 0 ? (
-        <p className="text-dim text-sm italic">No peers registered.</p>
-      ) : (
-        <ul className="flex flex-col gap-2">
-          {entries.map(([uuid, addr]) => (
-            <li key={uuid} className="row">
-              <div className="flex items-center justify-between gap-3">
-                <span className="mono text-dim text-xs">{uuid}</span>
-                <span className="font-semibold text-[var(--color-lime)]">{addr}</span>
-              </div>
-              {identities[addr] && (
-                <div className="mono text-soft text-[11px] mt-1">PeerID: {identities[addr]}</div>
-              )}
-            </li>
-          ))}
-        </ul>
-      )}
-    </>
+    <ul className="list">
+      {peers.map((p) => (
+        <li key={p.uuid} className="row flex flex-col gap-1.5">
+          <div className="flex items-center justify-between gap-3">
+            <span className="flex items-center gap-2 text-sm font-medium">
+              <span className="dot dot--live" />
+              <span className="mono">{p.addr}</span>
+            </span>
+            <span className={`badge ${p.peerID ? 'badge--ok' : ''}`}>
+              {p.peerID ? 'LIBP2P' : 'HTTP'}
+            </span>
+          </div>
+          {p.peerID && (
+            <span className="label truncate" title={p.peerID}>
+              {p.peerID}
+            </span>
+          )}
+        </li>
+      ))}
+    </ul>
   )
 }

@@ -1,12 +1,31 @@
-# React + Vite
+# Verity — dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React + Vite front end for [Verity](../README.md). Talks directly to each peer's
+HTTP API; there is no backend-for-frontend in between.
 
-Currently, two official plugins are available:
+```bash
+npm install
+npm run dev     # http://localhost:5173
+npm run lint
+npm run build
+```
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The backend must be running first (`cd ../backend && make build && ./bin/verity -peers=3`),
+otherwise every card renders its offline state.
 
-## Expanding the ESLint configuration
+## Layout
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+| Path | Role |
+|------|------|
+| `src/api.js` | Thin wrappers over the peer HTTP API (`/upload`, `/search`, `/files`, `/peers`, `/p2p/info`) |
+| `src/state.jsx` | `NetworkProvider` — one 4s poller shared by the whole dashboard |
+| `src/network-context.js` | The context + `useNetwork()` hook |
+| `src/components/` | The four cards, plus the `Cid` chip and `Logo` mark |
+| `src/index.css` | Design tokens (Tailwind v4 `@theme`) and component classes |
+
+Peer discovery is bootstrapped from `DEFAULT_PEER` in `src/api.js` (`127.0.0.1:5001`);
+every other address is learned from that peer's `/peers` response at runtime.
+
+In decentralized mode `/files` is a **node-local** view — each peer only knows the
+names it ingested itself — so the provider unions every peer's view into the single
+content index the dashboard shows.

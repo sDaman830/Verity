@@ -1,212 +1,509 @@
-@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Playfair+Display:ital@1&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap");
 @import "tailwindcss";
 
-/* Editorial green theme: a sage page holding one big lime panel, with deep
-   forest cards and lime text. Display headings pair a grotesk sans with an
-   italic serif for emphasis. */
-@theme {
-  --color-sage: #c7ccb3;
-  --color-lime: #d7f08c;
-  --color-lime-soft: #eaf6c4;
-  --color-forest: #0e3b2e;
-  --color-forest-soft: #16513e;
+/* Verity — a dark technical console.
+   Near-black control plane: hairline-bordered surfaces, monospace for every
+   hash and peer identity, and a single "verified green" accent held back for
+   live state only — status dots, focus rings, the primary action. Everything
+   else is neutral, so the content addresses stay the loudest thing on screen. */
 
-  --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Playfair Display", Georgia, serif;
+@theme {
+  --color-bg: #08090a;
+  --color-panel: #0c0e0f;
+  --color-card: #111415;
+  --color-card-hi: #171b1d;
+  --color-line: #1e2325;
+  --color-line-hi: #2c3336;
+
+  --color-ink: #e7e9eb;
+  --color-ink-2: #9aa1a6;
+  --color-ink-3: #676e73;
+
+  --color-accent: #3ddc97;
+  --color-accent-bg: #0f2b20;
+  --color-danger: #ff6b6b;
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
 }
 
 :root {
-  --display: clamp(2.5rem, 1.1rem + 5.5vw, 5rem);
-  --card-title: clamp(1.6rem, 1.2rem + 1.6vw, 2.4rem);
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --radius: 14px;
+  --radius-sm: 8px;
 }
 
 html {
-  background: var(--color-sage);
+  background: var(--color-bg);
+  color-scheme: dark;
 }
 
 body {
   margin: 0;
   font-family: var(--font-sans);
-  color: var(--color-forest);
+  color: var(--color-ink);
+  background: var(--color-bg);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  letter-spacing: -0.011em;
 }
 
-/* The lime panel that holds everything, floating on the sage page. */
-.panel {
-  background: var(--color-lime);
-  border-radius: clamp(1.5rem, 1rem + 2vw, 2.5rem);
-  max-width: 80rem;
-  margin-inline: auto;
-  padding: clamp(1.5rem, 1rem + 3vw, 4rem);
-}
-
-/* Small tracked label, e.g. "(01) UPLOAD". */
-.eyebrow {
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-
-/* Big display heading; <em> switches to the italic serif. */
-.display {
-  font-size: var(--display);
-  font-weight: 700;
-  line-height: 0.98;
-  letter-spacing: -0.02em;
-  margin: 0;
-}
-.display em,
-.serif {
-  font-family: var(--font-serif);
-  font-weight: 400;
-  font-style: italic;
-  letter-spacing: 0;
-}
-
-/* Deep-green feature card with lime text. */
-.card {
-  position: relative;
-  overflow: hidden;
-  background: var(--color-forest);
-  color: var(--color-lime);
-  border-radius: clamp(1rem, 0.6rem + 1.5vw, 1.75rem);
-  padding: clamp(1.4rem, 1rem + 1.5vw, 2.25rem);
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.card__head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem;
-  position: relative;
-  z-index: 1;
-}
-
-.card-title {
-  font-size: var(--card-title);
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: -0.02em;
-  color: var(--color-lime);
-  margin: 0.3rem 0 0;
-}
-.card-title em {
-  display: block;
-  font-family: var(--font-serif);
-  font-weight: 400;
-  font-style: italic;
-  letter-spacing: 0;
-}
-
-.card__body {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
-}
-
-/* Faint starburst watermark behind card content. */
-.card__mark {
-  position: absolute;
-  right: -2.5rem;
-  bottom: -2.5rem;
-  width: 16rem;
-  height: 16rem;
-  color: var(--color-forest-soft);
-  opacity: 0.55;
+/* Faint dot-grid, faded out below the fold — the "control plane" texture. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgba(255, 255, 255, 0.05) 1px,
+    transparent 0
+  );
+  background-size: 32px 32px;
+  mask-image: radial-gradient(ellipse 90% 55% at 50% 0%, #000 10%, transparent 80%);
   pointer-events: none;
   z-index: 0;
 }
 
-/* Lime circle with an arrow — the reference's signature accent. */
-.arrow-circle {
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: 3rem;
-  height: 3rem;
-  border-radius: 999px;
-  background: var(--color-lime);
-  color: var(--color-forest);
-  font-size: 1.25rem;
-  line-height: 1;
+/* A single cool glow behind the header, so the top of the page has depth. */
+body::after {
+  content: "";
+  position: fixed;
+  top: -18rem;
+  left: 50%;
+  width: 60rem;
+  height: 32rem;
+  translate: -50% 0;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(61, 220, 151, 0.07),
+    transparent 65%
+  );
+  pointer-events: none;
+  z-index: 0;
 }
 
-/* Inputs sitting on a forest card. */
+.shell {
+  position: relative;
+  z-index: 1;
+  max-width: 76rem;
+  margin-inline: auto;
+  padding: clamp(1.25rem, 0.8rem + 2vw, 3rem) clamp(1rem, 0.5rem + 2vw, 2.5rem)
+    5rem;
+}
+
+/* ── Type ─────────────────────────────────────────────────────────────── */
+
+/* Small tracked label: "CONTENT INDEX", "01". */
+.label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-ink-3);
+}
+
+.display {
+  font-size: clamp(1.75rem, 1.2rem + 2vw, 2.6rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.032em;
+  margin: 0;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+}
+
+/* ── Top bar ──────────────────────────────────────────────────────────── */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--color-line);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.brand__mark {
+  width: 1.85rem;
+  height: 1.85rem;
+  color: var(--color-accent);
+  flex: none;
+}
+
+.brand__name {
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+
+/* ── Status pill (mode, live peer count) ──────────────────────────────── */
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.34rem 0.7rem;
+  border: 1px solid var(--color-line);
+  border-radius: 999px;
+  background: var(--color-card);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--color-ink-2);
+  white-space: nowrap;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  flex: none;
+  background: var(--color-ink-3);
+}
+.dot--live {
+  background: var(--color-accent);
+  animation: pulse 2.4s var(--ease) infinite;
+}
+.dot--down {
+  background: var(--color-danger);
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(61, 220, 151, 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(61, 220, 151, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(61, 220, 151, 0);
+  }
+}
+
+/* ── Stat tiles ───────────────────────────────────────────────────────── */
+
+.stat {
+  background: var(--color-card);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  padding: 0.9rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.stat__value {
+  font-family: var(--font-mono);
+  font-size: 1.45rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
+}
+.stat__value--accent {
+  color: var(--color-accent);
+}
+
+/* ── Card ─────────────────────────────────────────────────────────────── */
+
+.card {
+  position: relative;
+  background: var(--color-card);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  padding: clamp(1.1rem, 0.9rem + 0.6vw, 1.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+  transition: border-color 200ms var(--ease);
+}
+.card:hover {
+  border-color: var(--color-line-hi);
+}
+
+.card__head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+
+.card__title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  margin: 0;
+  color: var(--color-ink);
+}
+
+.card__hint {
+  font-size: 0.8rem;
+  color: var(--color-ink-3);
+  margin: 0;
+}
+
+/* ── Form controls ────────────────────────────────────────────────────── */
+
 .field {
   width: 100%;
-  background: rgba(0, 0, 0, 0.2);
-  color: var(--color-lime);
-  border: 1px solid rgba(215, 240, 140, 0.35);
-  border-radius: 0.6rem;
-  padding: 0.6rem 0.85rem;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  padding: 0.55rem 0.75rem;
   font-family: var(--font-sans);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   transition: border-color 150ms var(--ease), box-shadow 150ms var(--ease);
 }
 .field::placeholder {
-  color: rgba(215, 240, 140, 0.55);
+  color: var(--color-ink-3);
+}
+.field:hover {
+  border-color: var(--color-line-hi);
 }
 .field:focus {
   outline: none;
-  border-color: var(--color-lime);
-  box-shadow: 0 0 0 3px rgba(215, 240, 140, 0.22);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(61, 220, 151, 0.13);
 }
 
-/* Lime pill button. */
+select.field {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  background: var(--color-lime);
-  color: var(--color-forest);
+  gap: 0.45rem;
+  background: var(--color-accent);
+  color: #04150e;
   font-family: var(--font-sans);
   font-weight: 600;
-  font-size: 0.9rem;
-  padding: 0.6rem 1.4rem;
-  border: none;
-  border-radius: 999px;
+  font-size: 0.82rem;
+  padding: 0.55rem 1.1rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: transform 150ms var(--ease), filter 150ms var(--ease);
+  white-space: nowrap;
+  transition: filter 150ms var(--ease), opacity 150ms var(--ease);
 }
-.btn:hover {
-  transform: translateY(-1px);
-  filter: brightness(1.05);
+.btn:hover:not(:disabled) {
+  filter: brightness(1.09);
 }
-.btn:active {
-  transform: translateY(0);
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 .btn:focus-visible {
-  outline: 2px solid var(--color-lime);
+  outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }
 
-/* List row inside a card. */
-.row {
-  border: 1px solid rgba(215, 240, 140, 0.18);
-  border-radius: 0.7rem;
-  padding: 0.7rem 0.9rem;
-  transition: background-color 150ms var(--ease);
+.btn--ghost {
+  background: transparent;
+  color: var(--color-ink-2);
+  border-color: var(--color-line);
 }
-.row:hover {
-  background: rgba(215, 240, 140, 0.06);
+.btn--ghost:hover:not(:disabled) {
+  color: var(--color-ink);
+  border-color: var(--color-line-hi);
+  background: var(--color-card-hi);
+  filter: none;
 }
 
-.mono {
-  font-family: ui-monospace, "SF Mono", monospace;
-  word-break: break-all;
+/* ── Dropzone ─────────────────────────────────────────────────────────── */
+
+.dropzone {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 7.5rem;
+  padding: 1.25rem;
+  border: 1px dashed var(--color-line-hi);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+  color: var(--color-ink-3);
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 160ms var(--ease), background-color 160ms var(--ease),
+    color 160ms var(--ease);
 }
-.text-soft {
-  color: var(--color-lime-soft);
+.dropzone:hover {
+  border-color: var(--color-ink-3);
+  color: var(--color-ink-2);
 }
-.text-dim {
-  color: rgba(215, 240, 140, 0.7);
+.dropzone--active {
+  border-color: var(--color-accent);
+  border-style: solid;
+  background: var(--color-accent-bg);
+  color: var(--color-accent);
+}
+.dropzone--filled {
+  border-style: solid;
+  border-color: var(--color-line-hi);
+  color: var(--color-ink);
+}
+.dropzone input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* ── Rows / lists ─────────────────────────────────────────────────────── */
+
+.row {
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  padding: 0.65rem 0.8rem;
+  background: var(--color-bg);
+  transition: border-color 150ms var(--ease), background-color 150ms var(--ease);
+}
+.row:hover {
+  border-color: var(--color-line-hi);
+  background: var(--color-card-hi);
+}
+
+/* Scrollable list body so a long index never blows out the card height. */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 23rem;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line-hi) transparent;
+  margin-right: -0.35rem;
+  padding-right: 0.35rem;
+}
+.list::-webkit-scrollbar {
+  width: 6px;
+}
+.list::-webkit-scrollbar-thumb {
+  background: var(--color-line-hi);
+  border-radius: 999px;
+}
+
+/* ── CID chip ─────────────────────────────────────────────────────────── */
+
+.cid {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--color-ink-2);
+  background: transparent;
+  border: 1px solid var(--color-line);
+  border-radius: 6px;
+  padding: 0.2rem 0.45rem;
+  cursor: pointer;
+  max-width: 100%;
+  transition: border-color 150ms var(--ease), color 150ms var(--ease);
+}
+.cid:hover {
+  border-color: var(--color-line-hi);
+  color: var(--color-ink);
+}
+.cid--copied {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+/* ── Badges ───────────────────────────────────────────────────────────── */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.04em;
+  padding: 0.15rem 0.4rem;
+  border-radius: 5px;
+  border: 1px solid var(--color-line);
+  color: var(--color-ink-3);
+}
+.badge--ok {
+  color: var(--color-accent);
+  border-color: rgba(61, 220, 151, 0.3);
+  background: var(--color-accent-bg);
+}
+.badge--err {
+  color: var(--color-danger);
+  border-color: rgba(255, 107, 107, 0.3);
+}
+
+/* ── Empty / loading states ───────────────────────────────────────────── */
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 1.75rem 1rem;
+  border: 1px dashed var(--color-line);
+  border-radius: var(--radius-sm);
+  color: var(--color-ink-3);
+  font-size: 0.82rem;
+  text-align: center;
+}
+
+.skeleton {
+  height: 3.1rem;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(
+    90deg,
+    var(--color-card-hi) 0%,
+    #1f2427 50%,
+    var(--color-card-hi) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s linear infinite;
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes spin {
+  to {
+    rotate: 360deg;
+  }
+}
+.spinner {
+  width: 0.85rem;
+  height: 0.85rem;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 999px;
+  animation: spin 700ms linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
